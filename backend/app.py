@@ -102,21 +102,13 @@ def build_summary(pii_list: list) -> dict:
 #  ROUTES
 # ══════════════════════════════════════════════════════════
 
-@app.get("/", tags=["Health"])
-def root():
-    return {
-        "status": "🟢 PII Sanitizer is running",
-        "docs":   "/docs",
-        "ui":     "/ui",
-    }
-
-
+@app.get("/", tags=["Health"], include_in_schema=False)
 @app.get("/ui", tags=["Health"], include_in_schema=False)
 def serve_ui():
     ui_path = os.path.join(BASE_DIR, "frontend", "index.html")
     if os.path.exists(ui_path):
         return FileResponse(ui_path)
-    return {"message": "Frontend not found. Add index.html to frontend/ folder"}
+    return {"status": "PII Sanitizer is running", "docs": "/docs"}
 
 
 # ── File Operations ───────────────────────────────────────
