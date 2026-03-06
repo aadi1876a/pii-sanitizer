@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAULT — PII Sanitization Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00d2b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          <circle cx="12" cy="16" r="1" fill="#00d2b4"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>VAULT</h1>
+        <p>PII Sanitization Platform</p>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      SYSTEMS NOMINAL
+    </div>
+  </header>
+
+  <!-- ══ LOGIN ══ -->
+  <div id="loginCard">
+    <div class="login-eyebrow">SECURE ACCESS PORTAL</div>
+    <div class="login-title">Sign In to<br>&nbsp;Your Workspace</div>
+    <div class="login-sub">Authenticate to access sensitive data operations.<br>All sessions are encrypted and logged.</div>
+    <div class="login-panel">
+      <div class="field-wrap">
+        <span class="field-label">Access Level</span>
+        <div class="role-chips">
+          <button class="role-chip active" id="chipUser" onclick="setRole('user')">&#9672; Standard User</button>
+          <button class="role-chip" id="chipAdmin" onclick="setRole('admin')">&#11041; Administrator</button>
+        </div>
+      </div>
+      <div class="field-wrap">
+        <span class="field-label">Username</span>
+        <div class="input-row">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <input type="text" id="username" placeholder="Enter username">
+        </div>
+      </div>
+      <div class="field-wrap">
+        <span class="field-label">Password</span>
+        <div class="input-row">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="password" placeholder="Enter password">
+        </div>
+      </div>
+      <div id="adminKeyBox">
+        <div class="divider"></div>
+        <div class="field-wrap">
+          <span class="field-label">Admin Key</span>
+          <div class="input-row">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78m0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            <input type="text" id="adminkey" placeholder="Enter admin access key">
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="login()">AUTHENTICATE &rarr;</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       ADMIN DASHBOARD
+  ══════════════════════════════════════ -->
+  <div id="adminDashboard" class="dashboard">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-badge badge-admin"><span class="status-dot"></span>Administrator</div>
+        <div class="topbar-title">Control Center</div>
+      </div>
+      <div class="topbar-right">
+        <div class="admin-nav">
+          <button class="nav-btn active" onclick="showAdminTab('overview')">Overview</button>
+          <button class="nav-btn" onclick="showAdminTab('files')">Files</button>
+          <button class="nav-btn" onclick="showAdminTab('users')">Users</button>
+          <button class="nav-btn" onclick="showAdminTab('audit')">Audit Log</button>
+        </div>
+        <button class="btn-logout" onclick="logout()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- ── TAB: OVERVIEW ── -->
+    <div id="adminTab-overview" class="admin-tab">
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card accent-cyan">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="stat-body">
+            <div class="stat-label">Files Uploaded</div>
+            <div class="stat-value" id="statTotal">0</div>
+          </div>
+        </div>
+        <div class="stat-card accent-gold">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="stat-body">
+            <div class="stat-label">PII Fields Masked</div>
+            <div class="stat-value" id="statPII">0</div>
+          </div>
+        </div>
+        <div class="stat-card accent-purple">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="stat-body">
+            <div class="stat-label">Fields Processed</div>
+            <div class="stat-value" id="statFields">0</div>
+          </div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="stat-body">
+            <div class="stat-label">Active Users</div>
+            <div class="stat-value" id="statUsers">2</div>
+          </div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="stat-body">
+            <div class="stat-label">Sanitized Files</div>
+            <div class="stat-value" id="statSanitized">0</div>
+          </div>
+        </div>
+        <div class="stat-card accent-cyan">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <div class="stat-body">
+            <div class="stat-label">Downloads</div>
+            <div class="stat-value" id="statDownloads">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Section -->
+      <div class="section-card">
+        <div class="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>
+          Upload File
+        </div>
+        <div class="upload-type-row">
+          <button class="type-chip active" id="typeStructured" onclick="setFileType('structured')">&#9707; Structured (CSV, XLSX, JSON)</button>
+          <button class="type-chip" id="typeUnstructured" onclick="setFileType('unstructured')">&#9784; Unstructured (PDF, DOCX, TXT)</button>
+        </div>
+        <div class="drop-area" id="dropArea">
+          <input type="file" id="fileUpload">
+          <div class="drop-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="drop-text-main">Drop your file here</div>
+          <div class="drop-text-sub">Supports structured and unstructured formats</div>
+          <div class="drop-browse">Browse Files</div>
+        </div>
+        <div class="file-name-display" id="fileNameDisplay"></div>
+        <button class="btn-upload" onclick="uploadFile()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>
+          SANITIZE &amp; UPLOAD
+        </button>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="section-card">
+        <div class="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Recent Activity
+        </div>
+        <div id="recentActivity" class="activity-feed">
+          <div class="activity-empty">// NO RECENT ACTIVITY</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: FILES ── -->
+    <div id="adminTab-files" class="admin-tab" style="display:none;">
+
+      <!-- Original Files -->
+      <div class="section-card">
+        <div class="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Original Files
+        </div>
+        <div class="table-controls">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="adminOrigSearch" placeholder="Search by filename..." oninput="filterTable('adminOriginalFiles','adminOrigSearch','adminOrigFilter','adminOrigTypeFilter')">
+          </div>
+          <select class="filter-select" id="adminOrigFilter" onchange="filterTable('adminOriginalFiles','adminOrigSearch','adminOrigFilter','adminOrigTypeFilter')">
+            <option value="">All Dates</option>
+          </select>
+          <select class="filter-select" id="adminOrigTypeFilter" onchange="filterTable('adminOriginalFiles','adminOrigSearch','adminOrigFilter','adminOrigTypeFilter')">
+            <option value="">All Types</option>
+            <option value="structured">Structured</option>
+            <option value="unstructured">Unstructured</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>File Name</th><th>Type</th><th>Size</th><th>Date Uploaded</th><th>Action</th></tr></thead>
+          <tbody id="adminOriginalFiles">
+            <tr class="empty-row"><td colspan="5">// NO ORIGINAL FILES YET</td></tr>
+          </tbody>
+        </table>
+        <div class="no-results" id="adminOrigNoResults" style="display:none;">// NO MATCHING FILES FOUND</div>
+      </div>
+
+      <!-- Sanitized Files -->
+      <div class="section-card">
+        <div class="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sanitized Output
+        </div>
+        <div class="table-controls">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="adminSanSearch" placeholder="Search by filename..." oninput="filterTable('adminSanitizedFiles','adminSanSearch','adminSanFilter','adminSanTypeFilter')">
+          </div>
+          <select class="filter-select" id="adminSanFilter" onchange="filterTable('adminSanitizedFiles','adminSanSearch','adminSanFilter','adminSanTypeFilter')">
+            <option value="">All Dates</option>
+          </select>
+          <select class="filter-select" id="adminSanTypeFilter" onchange="filterTable('adminSanitizedFiles','adminSanSearch','adminSanFilter','adminSanTypeFilter')">
+            <option value="">All Types</option>
+            <option value="structured">Structured</option>
+            <option value="unstructured">Unstructured</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>File Name</th><th>Type</th><th>PII Masked</th><th>Fields Processed</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="adminSanitizedFiles">
+            <tr class="empty-row"><td colspan="7">// NO SANITIZED FILES YET</td></tr>
+          </tbody>
+        </table>
+        <div class="no-results" id="adminSanNoResults" style="display:none;">// NO MATCHING FILES FOUND</div>
+      </div>
+    </div>
+
+    <!-- ── TAB: USERS ── -->
+    <div id="adminTab-users" class="admin-tab" style="display:none;">
+      <div class="section-card">
+        <div class="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          User Management
+        </div>
+        <div class="user-add-row">
+          <div class="input-row" style="flex:1">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <input type="text" id="newUsername" placeholder="New username">
+          </div>
+          <div class="input-row" style="flex:1">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="newUserPass" placeholder="New password">
+          </div>
+          <select class="filter-select" id="newUserRole" style="width:140px;">
+            <option value="user">Standard User</option>
+            <option value="admin">Administrator</option>
+          </select>
+          <button class="btn-add-user" onclick="addUser()">+ Add User</button>
+        </div>
+        <table>
+          <thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Added On</th><th>Action</th></tr></thead>
+          <tbody id="userTable">
+            <tr data-username="admin">
+              <td>admin</td>
+              <td><span class="role-badge badge-admin-sm">Administrator</span></td>
+              <td><span class="status-badge status-active"><span class="status-dot-small"></span>Active</span></td>
+              <td>System</td>
+              <td><span class="text-dim">—</span></td>
+            </tr>
+            <tr data-username="user">
+              <td>user</td>
+              <td><span class="role-badge badge-user-sm">Standard User</span></td>
+              <td><span class="status-badge status-active"><span class="status-dot-small"></span>Active</span></td>
+              <td>System</td>
+              <td><button class="btn-remove" onclick="removeUser(this, 'user')">Remove</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── TAB: AUDIT LOG ── -->
+    <div id="adminTab-audit" class="admin-tab" style="display:none;">
+      <div class="section-card">
+        <div class="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Audit Log
+        </div>
+        <div class="table-controls">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="auditSearch" placeholder="Search logs..." oninput="filterAudit()">
+          </div>
+          <select class="filter-select" id="auditActionFilter" onchange="filterAudit()">
+            <option value="">All Actions</option>
+            <option value="UPLOAD">Upload</option>
+            <option value="DOWNLOAD">Download</option>
+            <option value="LOGIN">Login</option>
+            <option value="LOGOUT">Logout</option>
+            <option value="USER_ADDED">User Added</option>
+            <option value="USER_REMOVED">User Removed</option>
+            <option value="DELETE">Delete</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Details</th><th>Status</th></tr></thead>
+          <tbody id="auditLog">
+            <tr class="empty-row"><td colspan="5">// NO AUDIT ENTRIES YET</td></tr>
+          </tbody>
+        </table>
+        <div class="no-results" id="auditNoResults" style="display:none;">// NO MATCHING LOG ENTRIES</div>
+      </div>
+    </div>
+
+  </div><!-- /adminDashboard -->
+
+
+  <!-- ══════════════════════════════════════
+       USER DASHBOARD
+  ══════════════════════════════════════ -->
+  <div id="userDashboard" class="dashboard">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-badge badge-user">&#9672; Standard User</div>
+        <div class="topbar-title">My Files</div>
+      </div>
+      <button class="btn-logout" onclick="logout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
+    </div>
+
+    <!-- User Stats -->
+    <div class="stats-grid user-stats">
+      <div class="stat-card accent-cyan">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="stat-body">
+          <div class="stat-label">Sanitized Files</div>
+          <div class="stat-value" id="userStatFiles">0</div>
+        </div>
+      </div>
+      <div class="stat-card accent-gold">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="stat-body">
+          <div class="stat-label">PII Fields Masked</div>
+          <div class="stat-value" id="userStatPII">0</div>
+        </div>
+      </div>
+      <div class="stat-card accent-purple">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+        <div class="stat-body">
+          <div class="stat-label">Downloads</div>
+          <div class="stat-value" id="userStatDownloads">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── USER UPLOAD SECTION (added) ── -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>
+        Upload File
+      </div>
+      <div class="upload-type-row">
+        <button class="type-chip active" id="userTypeStructured" onclick="setUserFileType('structured')">&#9707; Structured (CSV, XLSX, JSON)</button>
+        <button class="type-chip" id="userTypeUnstructured" onclick="setUserFileType('unstructured')">&#9784; Unstructured (PDF, DOCX, TXT)</button>
+      </div>
+      <div class="drop-area" id="userDropArea">
+        <input type="file" id="userFileUpload">
+        <div class="drop-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <div class="drop-text-main">Drop your file here</div>
+        <div class="drop-text-sub">Supports structured and unstructured formats</div>
+        <div class="drop-browse">Browse Files</div>
+      </div>
+      <div class="file-name-display" id="userFileNameDisplay"></div>
+      <button class="btn-upload" onclick="userUploadFile()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/><path d="M5 20h14"/></svg>
+        SANITIZE &amp; UPLOAD
+      </button>
+    </div>
+
+    <!-- Sanitized Files ONLY -->
+    <div class="section-card">
+      <div class="section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Sanitized Files
+      </div>
+      <div class="table-controls">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="userSanSearch" placeholder="Search by filename..." oninput="filterTable('userSanitizedFiles','userSanSearch','userSanFilter','userSanTypeFilter')">
+        </div>
+        <select class="filter-select" id="userSanFilter" onchange="filterTable('userSanitizedFiles','userSanSearch','userSanFilter','userSanTypeFilter')">
+          <option value="">All Dates</option>
+        </select>
+        <select class="filter-select" id="userSanTypeFilter" onchange="filterTable('userSanitizedFiles','userSanSearch','userSanFilter','userSanTypeFilter')">
+          <option value="">All Types</option>
+          <option value="structured">Structured</option>
+          <option value="unstructured">Unstructured</option>
+        </select>
+      </div>
+      <table>
+        <thead><tr><th>File Name</th><th>Type</th><th>PII Masked</th><th>Fields Processed</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="userSanitizedFiles">
+          <tr class="empty-row"><td colspan="7">// NO SANITIZED FILES AVAILABLE</td></tr>
+        </tbody>
+      </table>
+      <div class="no-results" id="userSanNoResults" style="display:none;">// NO MATCHING FILES FOUND</div>
+    </div>
+
+  </div><!-- /userDashboard -->
+
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

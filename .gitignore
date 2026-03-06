@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Keep folder structure but ignore generated files
+uploads/*
+!uploads/.gitkeep
+outputs/*
+!outputs/.gitkeep
+
+# Logs
+audit_log.jsonl
+
+# Environment
+.env
+venv/
+.venv/
